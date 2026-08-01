@@ -20,17 +20,36 @@
                 'rejected' => 'text-bg-danger',
                 'selected' => 'text-bg-success',
             ][$row['status']] ?? 'text-bg-secondary'; ?>
-            <div class="profile-row d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div>
-                    <a href="<?= url('/jobs/' . $row['job_posting_id']) ?>" class="text-reset"><strong><?= e($row['job_title']) ?></strong></a>
-                    <span class="badge <?= $statusBadge ?> ms-1"><?= e(ucfirst(str_replace('_', ' ', $row['status']))) ?></span>
-                    <?php if ($row['matchScore']['percent'] !== null): ?>
-                        <span class="badge text-bg-light border ms-1"><?= (int) $row['matchScore']['percent'] ?>% match</span>
+            <div class="profile-row">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                    <div>
+                        <a href="<?= url('/jobs/' . $row['job_posting_id']) ?>" class="text-reset"><strong><?= e($row['job_title']) ?></strong></a>
+                        <span class="badge <?= $statusBadge ?> ms-1"><?= e(ucfirst(str_replace('_', ' ', $row['status']))) ?></span>
+                        <?php if ($row['matchScore']['percent'] !== null): ?>
+                            <span class="badge text-bg-light border ms-1"><?= (int) $row['matchScore']['percent'] ?>% match</span>
+                        <?php endif; ?>
+                        <br>
+                        <span class="small text-muted"><?= e($row['company_name']) ?> &middot; Applied <?= e($row['created_at']) ?></span>
+                        <?php if (!empty($row['cover_note'])): ?><p class="small text-muted mb-0 mt-1">"<?= e($row['cover_note']) ?>"</p><?php endif; ?>
+                    </div>
+                    <?php if (!empty($row['timeline'])): ?>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#timeline-<?= (int) $row['id'] ?>">
+                            <i class="bi bi-clock-history me-1"></i>Timeline
+                        </button>
                     <?php endif; ?>
-                    <br>
-                    <span class="small text-muted"><?= e($row['company_name']) ?> &middot; Applied <?= e($row['created_at']) ?></span>
-                    <?php if (!empty($row['cover_note'])): ?><p class="small text-muted mb-0 mt-1">"<?= e($row['cover_note']) ?>"</p><?php endif; ?>
                 </div>
+                <?php if (!empty($row['timeline'])): ?>
+                    <div class="collapse mt-3" id="timeline-<?= (int) $row['id'] ?>">
+                        <ul class="timeline">
+                            <?php foreach ($row['timeline'] as $event): ?>
+                                <li class="timeline-item">
+                                    <div class="fw-semibold small"><i class="bi <?= e($event['icon']) ?> me-1 text-primary"></i><?= e($event['label']) ?></div>
+                                    <div class="small text-muted"><?= e(date('d M Y, h:i A', strtotime($event['at']))) ?></div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
     </div>
