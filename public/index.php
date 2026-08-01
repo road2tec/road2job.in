@@ -1,6 +1,12 @@
 <?php
 
 define('BASE_PATH', dirname(__DIR__));
+// Where publicly-served uploads/assets physically live - this file's own
+// directory (public/) here, but a different deployment layout (flattened
+// production, see DEPLOYMENT.md) sets this to the same value as BASE_PATH
+// instead. Anything writing to or resolving uploads/assets must use this,
+// never a hardcoded "public/..." path, so it works under either layout.
+define('WEB_ROOT', __DIR__);
 
 // Composer's autoloader (PHPMailer, etc.) is optional - the app boots without it.
 if (is_file(BASE_PATH . '/vendor/autoload.php')) {

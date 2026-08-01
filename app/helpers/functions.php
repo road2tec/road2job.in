@@ -95,7 +95,7 @@ if (!function_exists('asset')) {
     function asset(string $path): string
     {
         $path = ltrim($path, '/');
-        $absolute = BASE_PATH . '/public/assets/' . $path;
+        $absolute = WEB_ROOT . '/assets/' . $path;
         $version = is_file($absolute) ? filemtime($absolute) : null;
 
         $url = url('assets/' . $path);

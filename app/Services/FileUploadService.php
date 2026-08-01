@@ -76,7 +76,7 @@ class FileUploadService
             throw new RuntimeException('File content does not match its extension.');
         }
 
-        $directory = base_path("public/uploads/{$type}s");
+        $directory = WEB_ROOT . "/uploads/{$type}s";
 
         if (!is_dir($directory)) {
             mkdir($directory, 0775, true);
