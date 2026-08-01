@@ -1,0 +1,880 @@
+/* ==========================================================================
+   Road2Job dashboard design system - clean minimal SaaS
+   (Stripe / Linear / Notion inspired: refined type, whitespace, soft
+   shadows instead of heavy borders). Used by partials/dashboard_shell.php
+   and everything rendered through the admin/student/employer layouts.
+   ========================================================================== */
+
+:root {
+    /* Brand palette sampled directly from logo/image.png (real logo, not
+       invented): navy #061a46 wordmark, gold #fee404 -> orange #fe9c00 ->
+       deep orange #fd8201 gradient in the mark itself.
+       --r2j-primary is the vivid brand orange for FILLS (buttons, badge
+       chips, gradient stops) - white text on it fails WCAG (~2.4:1), so
+       button text pairs it with navy instead (~6.8:1). --r2j-primary-text
+       is a deliberately deepened orange (~5.2:1 on white, ~4.8:1 even on
+       the soft-tinted surface below) for anywhere orange is used AS TEXT,
+       an icon glyph, or a border against a light background - using the
+       vivid value there would fail contrast. */
+    --r2j-primary: #f5900a;
+    --r2j-primary-hover: #d97a00;
+    --r2j-primary-text: #a85709;
+    --r2j-primary-soft: rgba(245, 144, 10, .10);
+    --r2j-gold: #fee404;
+    --r2j-ink: #0a1f47;
+    /* Dedicated, theme-invariant navy for text ON the orange fill itself
+       (buttons) - --r2j-primary never changes between themes, so its
+       paired text color can't either. Not the same token as --r2j-ink,
+       which intentionally light-shifts in dark mode for body text on the
+       page background - reusing it here broke button-text contrast. */
+    --r2j-primary-fill-text: #0a1f47;
+    --r2j-radius: .75rem;
+    --r2j-radius-sm: .5rem;
+    --r2j-border: rgba(15, 23, 42, .08);
+    --r2j-shadow-sm: 0 1px 2px rgba(15, 23, 42, .04), 0 1px 3px rgba(15, 23, 42, .06);
+    --r2j-shadow-md: 0 8px 24px rgba(15, 23, 42, .08), 0 2px 6px rgba(15, 23, 42, .04);
+    --r2j-text-muted: #64748b;
+    --r2j-bg-subtle: #f8fafc;
+}
+
+[data-bs-theme="dark"] {
+    /* On the dark surface the vivid orange itself already clears ~8:1, so
+       primary-text collapses back to the vivid value instead of staying
+       darkened (the light-mode darkening only exists to fix contrast
+       against a white page, which doesn't apply here). Navy ink is
+       unusable on a dark background (~1.2:1) - swap to a light neutral. */
+    --r2j-primary-text: #f5900a;
+    --r2j-primary-soft: rgba(245, 144, 10, .18);
+    --r2j-ink: #f1f5f9;
+    --r2j-border: rgba(255, 255, 255, .08);
+    --r2j-shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+    --r2j-shadow-md: 0 8px 24px rgba(0, 0, 0, .45), 0 2px 6px rgba(0, 0, 0, .3);
+    --r2j-text-muted: #94a3b8;
+    --r2j-bg-subtle: #161a23;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--r2j-bg-subtle);
+    font-size: .925rem;
+    /* Bootstrap's g-5 row gutters use negative margins that read as a
+       few px of "overflow" at very narrow widths (e.g. 320px) even
+       though nothing is actually visually clipped or scrollable - this
+       is the standard, safe guard against it actually becoming a
+       scrollbar on any page. */
+    overflow-x: hidden;
+}
+
+[data-bs-theme="dark"] body {
+    background-color: #0b0d12;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -.01em;
+    color: var(--r2j-ink);
+}
+
+.navbar-brand {
+    color: var(--r2j-ink) !important;
+    letter-spacing: -.02em;
+}
+
+.text-muted {
+    color: var(--r2j-text-muted) !important;
+}
+
+/* ---------- Bootstrap CDN utility overrides ----------
+   The app links Bootstrap's compiled CDN CSS directly (no Sass build step
+   per the project's no-Node-in-production rule), so its own default blue
+   ($primary) leaks through anywhere these utilities/components are used
+   without an explicit override here. */
+
+a {
+    color: var(--r2j-primary-text);
+}
+
+a:hover {
+    color: var(--r2j-primary-hover);
+}
+
+.text-primary {
+    color: var(--r2j-primary-text) !important;
+}
+
+.bg-primary {
+    background-color: var(--r2j-primary) !important;
+}
+
+.badge.bg-primary,
+.badge.text-bg-primary {
+    background-color: var(--r2j-primary) !important;
+    color: var(--r2j-ink) !important;
+}
+
+.border-primary {
+    border-color: var(--r2j-primary-text) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--r2j-primary);
+    border-color: var(--r2j-primary);
+}
+
+.form-check-input:focus {
+    border-color: var(--r2j-primary);
+    box-shadow: 0 0 0 3px var(--r2j-primary-soft);
+}
+
+.page-link {
+    color: var(--r2j-primary-text);
+}
+
+.page-item.active .page-link {
+    background-color: var(--r2j-primary);
+    border-color: var(--r2j-primary);
+    color: var(--r2j-ink);
+}
+
+.nav-pills .nav-link.active,
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--r2j-primary) !important;
+    color: var(--r2j-ink) !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--r2j-ink);
+    border-color: var(--r2j-border) var(--r2j-border) var(--bs-body-bg);
+}
+
+/* ---------- Dashboard shell / topbar ---------- */
+
+.dash-navbar {
+    background: var(--bs-body-bg);
+    border-bottom: 1px solid var(--r2j-border) !important;
+    box-shadow: none !important;
+    padding-block: .65rem;
+}
+
+/* ---------- Sidebar ---------- */
+
+.sidebar {
+    width: 250px;
+    flex: 0 0 250px;
+    min-height: calc(100vh - 57px);
+    background: var(--bs-body-bg);
+    border-right: 1px solid var(--r2j-border) !important;
+}
+
+/* Flex items default to min-width:auto, which refuses to shrink below
+   their content's intrinsic width - a wide (nowrap) table inside main
+   was growing main itself past the viewport instead of scrolling inside
+   its own .table-responsive wrapper, making the extra columns genuinely
+   unreachable (no scrollbar anywhere could reach them). This is the
+   actual fix: let main shrink to the viewport, which forces its child
+   .table-responsive to become the thing that scrolls internally. */
+.sidebar + main {
+    min-width: 0;
+}
+
+.sidebar .offcanvas-body {
+    padding: 1.25rem .85rem;
+}
+
+.sidebar .offcanvas-header {
+    border-bottom: 1px solid var(--r2j-border);
+    padding: 1rem 1.25rem;
+}
+
+.sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding: .55rem .75rem;
+    border-radius: var(--r2j-radius-sm);
+    color: var(--r2j-text-muted);
+    font-size: .875rem;
+    font-weight: 500;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+.sidebar .nav-link i {
+    font-size: 1rem;
+    width: 1.1rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.sidebar .nav-link:hover {
+    background: var(--r2j-bg-subtle);
+    color: var(--bs-body-color);
+}
+
+.sidebar .nav-link.active {
+    background: var(--r2j-primary-soft);
+    color: var(--r2j-primary-text);
+    font-weight: 600;
+}
+
+.nav-heading {
+    padding: .9rem .75rem .3rem;
+    font-size: .7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--r2j-text-muted);
+}
+
+.nav-heading:first-child {
+    padding-top: 0;
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+    border: 1px solid var(--r2j-border);
+    border-radius: var(--r2j-radius);
+    box-shadow: var(--r2j-shadow-sm);
+}
+
+.card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--r2j-border);
+    font-weight: 600;
+    padding: .9rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+    border-radius: var(--r2j-radius-sm);
+    font-weight: 500;
+    font-size: .875rem;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: var(--r2j-primary);
+    border-color: var(--r2j-primary);
+    /* Navy text, not white - white-on-orange fails contrast (~2.4:1),
+       navy-on-orange passes comfortably (~6.8:1). See :root comment.
+       Uses --r2j-primary-fill-text (theme-invariant), not --r2j-ink
+       (which light-shifts in dark mode and broke this exact pairing). */
+    color: var(--r2j-primary-fill-text);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: var(--r2j-primary-hover);
+    border-color: var(--r2j-primary-hover);
+    color: var(--r2j-primary-fill-text);
+}
+
+/* Bootstrap's own compiled CSS ships an explicit .btn-primary:disabled
+   rule with higher specificity than the plain .btn-primary override
+   above, so disabled buttons were falling back to stock Bootstrap blue
+   instead of the faded brand orange. */
+.btn-primary:disabled,
+.btn-primary.disabled {
+    background: var(--r2j-primary);
+    border-color: var(--r2j-primary);
+    color: var(--r2j-primary-fill-text);
+    opacity: .65;
+}
+
+.btn-outline-primary {
+    color: var(--r2j-primary-text);
+    border-color: var(--r2j-primary-text);
+}
+
+.btn-outline-primary:hover {
+    background: var(--r2j-primary);
+    border-color: var(--r2j-primary);
+    color: var(--r2j-ink);
+}
+
+/* Bootstrap 5's outline-button component pins text/border to the
+   theme-invariant base brand hue (--bs-secondary/--bs-danger), not the
+   theme-aware "-color" tokens it defines for muted text elsewhere - so
+   these never brightened for dark mode and failed WCAG contrast (~3.3:1
+   against the dashboard's dark card background, needs 4.5:1). Reusing
+   Bootstrap's own already-dark-aware tokens here instead of inventing
+   new hardcoded colors. */
+[data-bs-theme="dark"] .btn-outline-secondary {
+    color: var(--bs-secondary-color);
+    border-color: var(--bs-secondary-color);
+}
+
+[data-bs-theme="dark"] .btn-outline-danger {
+    color: var(--bs-danger-text-emphasis);
+    border-color: var(--bs-danger-text-emphasis);
+}
+
+/* The topbar account-switcher uses Bootstrap's stock .btn-light (stays
+   near-white regardless of theme), which breaks .avatar-initials' translucent
+   orange fill inside it in dark mode (it flattens to a light cream backdrop,
+   1.93:1 contrast). Scoped to .dash-navbar specifically, not .btn-light
+   globally - the homepage hero's CTA button also uses .btn-light and is
+   deliberately white against its fixed dark gradient; a global override
+   would have broken that. */
+[data-bs-theme="dark"] .dash-navbar .btn-light {
+    background: rgba(255, 255, 255, .08);
+    border-color: var(--r2j-border);
+    color: var(--r2j-ink);
+}
+
+/* ---------- Forms ---------- */
+
+.form-label {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--r2j-text-muted);
+    margin-bottom: .35rem;
+}
+
+.form-control,
+.form-select {
+    border-radius: var(--r2j-radius-sm);
+    border-color: var(--r2j-border);
+    font-size: .875rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--r2j-primary-text);
+    box-shadow: 0 0 0 3px var(--r2j-primary-soft);
+}
+
+/* ---------- Multi-select / autocomplete component (public/assets/js/multi-select.js) ---------- */
+
+.ms-root {
+    position: relative;
+}
+
+.ms-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    margin-bottom: .4rem;
+}
+
+.ms-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    background: var(--r2j-primary-soft);
+    border: 1px solid var(--r2j-border);
+    border-radius: 999px;
+    padding: .2rem .35rem .2rem .65rem;
+    font-size: .8rem;
+}
+
+.ms-chip-label {
+    color: var(--r2j-ink);
+    font-weight: 500;
+}
+
+.ms-chip-secondary {
+    font-size: .7rem;
+    padding: .1rem 1.3rem .1rem .4rem;
+    width: auto;
+    border-radius: 999px;
+}
+
+.ms-chip-remove {
+    border: 0;
+    background: transparent;
+    color: var(--r2j-text-muted);
+    line-height: 1;
+    font-size: 1rem;
+    padding: 0 .15rem;
+    border-radius: 50%;
+}
+
+.ms-chip-remove:hover {
+    color: var(--bs-danger, #dc3545);
+    background: rgba(220, 53, 69, .1);
+}
+
+.ms-dropdown {
+    display: none;
+    position: absolute;
+    z-index: 1050;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: .25rem;
+    max-height: 260px;
+    overflow-y: auto;
+    background: var(--bs-body-bg, #fff);
+    border: 1px solid var(--r2j-border);
+    border-radius: var(--r2j-radius-sm);
+    box-shadow: var(--r2j-shadow-md);
+}
+
+.ms-dropdown-open {
+    display: block;
+}
+
+.ms-dropdown-item {
+    padding: .45rem .75rem;
+    font-size: .85rem;
+    cursor: pointer;
+}
+
+.ms-dropdown-item-active,
+.ms-dropdown-item:hover {
+    background: var(--r2j-primary-soft);
+}
+
+.ms-dropdown-empty {
+    padding: .5rem .75rem;
+    font-size: .8rem;
+    color: var(--r2j-text-muted);
+}
+
+.ms-related {
+    font-size: .78rem;
+    margin-top: .35rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .3rem;
+}
+
+.ms-related-label {
+    color: var(--r2j-text-muted);
+}
+
+.ms-related-chip {
+    border: 1px dashed var(--r2j-border);
+    background: transparent;
+    color: var(--r2j-primary-text);
+    border-radius: 999px;
+    padding: .1rem .55rem;
+    font-size: .75rem;
+}
+
+.ms-related-chip:hover {
+    background: var(--r2j-primary-soft);
+}
+
+/* ---------- Role-selection cards (register page) ---------- */
+
+.role-choice {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .4rem;
+    padding: 1rem .5rem;
+    border: 1px solid var(--r2j-border);
+    border-radius: var(--r2j-radius-sm);
+    cursor: pointer;
+    text-align: center;
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--bs-body-color);
+    transition: border-color .15s ease, background-color .15s ease;
+    height: 100%;
+}
+
+.role-choice input[type="radio"] {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.role-choice i {
+    font-size: 1.4rem;
+    color: var(--r2j-primary-text);
+}
+
+.role-choice:hover {
+    border-color: var(--r2j-primary-text);
+}
+
+.role-choice:has(input:checked),
+.role-choice--active {
+    border-color: var(--r2j-primary);
+    background: var(--r2j-primary-soft);
+    font-weight: 600;
+}
+
+.role-choice input:focus-visible {
+    outline: 2px solid var(--r2j-primary-text);
+    outline-offset: 2px;
+}
+
+/* ---------- Badges / tags ---------- */
+
+.badge.text-bg-light {
+    background: var(--r2j-bg-subtle) !important;
+    border: 1px solid var(--r2j-border) !important;
+    color: var(--bs-body-color) !important;
+    font-weight: 500;
+    border-radius: 999px;
+}
+
+/* ---------- Dropdowns / modals ---------- */
+
+.dropdown-menu {
+    border: 1px solid var(--r2j-border);
+    box-shadow: var(--r2j-shadow-md);
+    border-radius: var(--r2j-radius-sm);
+    /* Guards every dropdown (notifications, user menu, any future one)
+       from ever bleeding past the viewport edge on narrow screens -
+       Bootstrap's Popper positioning keeps it on-screen horizontally,
+       but a fixed min-width can still force it wider than the viewport
+       has room for. */
+    max-width: min(320px, calc(100vw - 1.5rem));
+}
+
+.dropdown-menu-notifications {
+    min-width: 280px;
+}
+
+@media (max-width: 420px) {
+    /* Right-anchored Popper positioning isn't enough on narrow screens -
+       the bell button sits left-of-center in the topbar, so even a
+       width-capped menu still extends past the left edge. Break it out
+       of the normal anchored flow entirely into a fixed sheet under the
+       topbar instead, which is unambiguously always on-screen. */
+    .dropdown-menu-notifications {
+        position: fixed !important;
+        inset: auto .75rem auto .75rem !important;
+        top: 60px !important;
+        width: auto !important;
+        max-width: none;
+        min-width: 0;
+    }
+}
+
+.modal-content {
+    border: none;
+    border-radius: var(--r2j-radius);
+    box-shadow: var(--r2j-shadow-md);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--r2j-border);
+}
+
+/* ---------- Tables ---------- */
+
+.table {
+    font-size: .875rem;
+    --bs-table-border-color: var(--r2j-border);
+}
+
+.table thead th {
+    font-weight: 600;
+    color: var(--r2j-text-muted);
+    text-transform: uppercase;
+    font-size: .7rem;
+    letter-spacing: .04em;
+    border-bottom-width: 1px;
+}
+
+.table tbody tr:hover {
+    background: var(--r2j-bg-subtle);
+}
+
+/* Inside a .table-responsive wrapper, force cells to scroll horizontally
+   instead of wrapping their own text - wrapping produces cramped,
+   multi-line rows on mobile ("Demo Mentor" breaking across two lines);
+   a clean horizontal scroll of the whole table reads far more usable. */
+.table-responsive .table td,
+.table-responsive .table th {
+    white-space: nowrap;
+}
+
+/* ---------- Breadcrumbs ---------- */
+
+.breadcrumb {
+    font-size: .8rem;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-item a {
+    color: var(--r2j-text-muted);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--r2j-primary-text);
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--r2j-primary-text);
+    font-weight: 500;
+}
+
+/* Left-border accent for rows that genuinely need attention (not every
+   status - a healthy/normal row gets no accent, avoiding a wall of color). */
+.row-attn-warning {
+    box-shadow: inset 3px 0 0 var(--bs-warning, #f0ad4e);
+}
+
+.row-attn-danger {
+    box-shadow: inset 3px 0 0 var(--bs-danger, #dc3545);
+}
+
+/* ---------- Avatar initials (table name columns) ---------- */
+
+.avatar-initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background: var(--r2j-primary-soft);
+    color: var(--r2j-primary-text);
+    font-size: .7rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-right: .5rem;
+}
+
+/* The translucent orange fill assumes it's sitting on the dark page
+   background (its usual context, table rows) - correct there, but still
+   only 3.79:1 even after darkening the topbar's account-switcher pill
+   (previous rule above), since a translucent fill over a translucent fill
+   composites unpredictably. A solid background sidesteps that regardless
+   of container - reuses the existing dark-mode surface token instead of a
+   new color (7.36:1 against the orange text). */
+[data-bs-theme="dark"] .avatar-initials {
+    background: var(--r2j-bg-subtle);
+}
+
+/* ---------- Feature/section icon tile (dashboard coming-soon, etc.) ---------- */
+
+.feature-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--r2j-radius-sm);
+    background: var(--r2j-primary-soft);
+    color: var(--r2j-primary-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+/* ---------- Profile section rows (Education/Projects/etc list items) ---------- */
+
+.profile-row {
+    border-bottom: 1px solid var(--r2j-border);
+    padding-block: .65rem;
+}
+
+.profile-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.profile-row:first-child {
+    padding-top: 0;
+}
+
+/* ---------- Career timeline ---------- */
+
+.timeline {
+    position: relative;
+    padding-left: 2.25rem;
+    margin: 0;
+    list-style: none;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -1.65rem;
+    top: .35rem;
+    width: .55rem;
+    height: .55rem;
+    border-radius: 50%;
+    background: var(--r2j-primary);
+}
+
+.timeline-item::after {
+    content: "";
+    position: absolute;
+    left: -1.42rem;
+    top: 1rem;
+    bottom: -.2rem;
+    width: 1px;
+    background: var(--r2j-border);
+}
+
+.timeline-item:last-child::after {
+    display: none;
+}
+
+/* ---------- Interview (continuous recording) ---------- */
+
+.interview-camera-frame video {
+    width: 100%;
+    max-width: 560px;
+    border-radius: var(--r2j-radius);
+    background: #0a1f47;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.interview-rec-dot {
+    display: inline-block;
+    width: .6rem;
+    height: .6rem;
+    border-radius: 50%;
+    background: #dc3545;
+    animation: interview-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes interview-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .interview-rec-dot {
+        animation: none;
+    }
+}
+
+.interview-mic-meter {
+    height: .4rem;
+    border-radius: 999px;
+    background: var(--r2j-border);
+    overflow: hidden;
+}
+
+.interview-mic-meter__fill {
+    height: 100%;
+    width: 0;
+    background: var(--r2j-primary);
+    transition: width .1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .interview-mic-meter__fill {
+        transition: none;
+    }
+}
+
+/* ---------- Empty state (dashboard) ----------
+   Mirrors marketing.css's .empty-state for the public site - the
+   dashboard only ever had a bare line of muted text for "nothing here
+   yet" states, this gives it the same icon+heading+copy treatment. */
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    border: 1px dashed var(--r2j-border);
+    border-radius: var(--r2j-radius);
+    background: var(--r2j-bg-subtle);
+}
+
+.empty-state .empty-state__icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--r2j-primary-soft);
+    color: var(--r2j-primary-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+    font-size: 1.05rem;
+    margin-bottom: .35rem;
+}
+
+/* ---------- Skeleton / loading state ---------- */
+
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    background: var(--r2j-bg-subtle);
+    border-radius: var(--r2j-radius-sm);
+    color: transparent !important;
+}
+
+.skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .5), transparent);
+    animation: r2j-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+[data-bs-theme="dark"] .skeleton::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .06), transparent);
+}
+
+@keyframes r2j-skeleton-shimmer {
+    100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton::after {
+        animation: none;
+    }
+}
+
+/* ---------- Motion ---------- */
+
+@keyframes r2j-card-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: r2j-card-in .3s ease-out both;
+}
+
+a.card {
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+a.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--r2j-shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card {
+        animation: none;
+    }
+
+    a.card {
+        transition: none;
+    }
+
+    a.card:hover {
+        transform: none;
+    }
+}

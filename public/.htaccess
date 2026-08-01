@@ -1,0 +1,57 @@
+# Override the project-root .htaccess deny-all so this directory (the actual web root) is servable.
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Allow from all
+</IfModule>
+
+RewriteEngine On
+
+# Route everything through the front controller except real files/directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    # Only sent over an actual HTTPS connection (e.g. Hostinger's free SSL) - harmless to
+    # omit locally over plain HTTP, never sent incorrectly on an insecure connection.
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+    # 'unsafe-inline' on script-src/style-src is a deliberate trade-off: the app relies on
+    # inline onclick/onchange handlers and inline <script>/style attributes throughout its
+    # views, and rewriting all of that is a real refactor outside a headers-hardening pass.
+    # Still meaningfully narrows the attack surface - explicit origin allowlists instead of
+    # wildcards, and hard blocks on object-src/base-uri/frame-ancestors.
+    # media-src needs 'blob:' in addition to 'self': the interview recorder's
+    # pre-upload preview plays the just-recorded clip from a blob: object URL
+    # (URL.createObjectURL on the in-memory MediaRecorder Blob) before it has
+    # been uploaded/has a real same-origin URL at all - default-src's 'self'
+    # does not implicitly cover blob: origins for media-src fallback.
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
+    Header unset X-Powered-By
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+Options -Indexes

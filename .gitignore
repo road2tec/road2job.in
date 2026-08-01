@@ -1,0 +1,23 @@
+/vendor/
+/.env
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/sessions/*
+!/storage/sessions/.gitkeep
+/public/uploads/resumes/*
+!/public/uploads/resumes/.gitkeep
+/public/uploads/avatars/*
+!/public/uploads/avatars/.gitkeep
+/public/uploads/documents/*
+!/public/uploads/documents/.gitkeep
+/public/uploads/logos/*
+!/public/uploads/logos/.gitkeep
+/public/uploads/gallerys/*
+!/public/uploads/gallerys/.gitkeep
+/public/uploads/videos/*
+!/public/uploads/videos/.gitkeep
+/road2job-hostinger-final.zip
+/road2job-deploy*.zip
+/road2job databse/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,622 @@
+:root {
+    /* Gold -> orange -> deep orange, matching the real gradient inside the
+       logo mark itself (sampled via GD: #fee404 -> #feb903 -> #fe9c00 ->
+       #fd8201) rather than an invented two-stop blend. */
+    --r2j-gradient: linear-gradient(135deg, #fee404 0%, #f5900a 55%, #d97a00 100%);
+    /* Deep navy, not near-black - stays this value in both light/dark
+       site-mode (a deliberate committed dark band, same reasoning as the
+       hero itself), reused for the hero, CTA band, and .section-navy. */
+    --r2j-ambient-base: #0d1b3a;
+    /* Warm section tint - the "supporting" band in the site's section
+       rhythm (white -> tint -> white -> navy -> white), distinct from the
+       cool neutral --r2j-bg-subtle used on the dashboard. */
+    --r2j-tint: #fff6e9;
+}
+
+[data-bs-theme="dark"] {
+    --r2j-tint: #1c140a;
+}
+
+/* ---------- Section rhythm ---------- */
+
+.section-tint {
+    background: var(--r2j-tint);
+}
+
+.section-navy {
+    background: var(--r2j-ambient-base);
+    color: #fff;
+}
+
+.section-navy h1,
+.section-navy h2,
+.section-navy h3,
+.section-navy p {
+    color: #fff;
+}
+
+.section-navy .text-muted {
+    color: rgba(255, 255, 255, .7) !important;
+}
+
+.site-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-bs-theme="dark"] .site-nav {
+    background: rgba(15, 17, 21, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-link {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.75;
+}
+
+.footer-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* ---------- Display type (homepage headings only - dashboard keeps Inter) ---------- */
+
+.font-display {
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -.02em;
+}
+
+/* ---------- Ambient hero / CTA band ----------
+   Deliberate, committed dark treatment (stays this way in both light and
+   dark site-mode, like Linear/Stripe keep their hero band dark regardless
+   of a reading-mode toggle) - layered radial glows + a faint grid, instead
+   of a flat diagonal gradient. */
+
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    background:
+        radial-gradient(55% 55% at 12% 10%, rgba(254, 228, 4, .30), transparent 60%),
+        radial-gradient(45% 60% at 88% 15%, rgba(245, 144, 10, .40), transparent 60%),
+        radial-gradient(70% 55% at 50% 105%, rgba(217, 122, 0, .30), transparent 60%),
+        var(--r2j-ambient-base);
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(75% 65% at 50% 25%, black, transparent 92%);
+    mask-image: radial-gradient(75% 65% at 50% 25%, black, transparent 92%);
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* app.css sets a blanket navy color on h1-h6 for light surfaces - these
+   dark ambient bands need their headings to stay white regardless. */
+.hero-section h1,
+.hero-section h2,
+.cta-section h2 {
+    color: #fff;
+}
+
+/* Glass cards */
+.glass-card {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    border-radius: 1rem;
+}
+
+/* ---------- Persona cluster (hero visual) ---------- */
+
+.persona-cluster {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: .25rem;
+}
+
+.persona-card {
+    background: rgba(255, 255, 255, .08);
+    border: 1px solid rgba(255, 255, 255, .16);
+    backdrop-filter: blur(14px);
+    border-radius: 1rem;
+    padding: 1.1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+    transition: transform .25s ease, background-color .25s ease;
+}
+
+.persona-card--2,
+.persona-card--3 {
+    margin-top: 1.5rem;
+}
+
+.persona-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, .13);
+}
+
+.persona-card__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: .65rem;
+    background: rgba(255, 255, 255, .14);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.persona-card__label {
+    font-size: .8rem;
+    font-weight: 500;
+    opacity: .92;
+    line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .persona-card {
+        transition: none;
+    }
+
+    .persona-card:hover {
+        transform: none;
+    }
+}
+
+/* ---------- Role cards ("Choose your path") ---------- */
+
+.role-card {
+    border-radius: 1rem;
+    border: 1px solid var(--bs-border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    height: 100%;
+}
+
+.role-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(245, 144, 10, 0.16);
+    border-color: rgba(245, 144, 10, .4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .role-card {
+        transition: none;
+    }
+
+    .role-card:hover {
+        transform: none;
+    }
+}
+
+.feature-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    background: linear-gradient(135deg, rgba(254, 228, 4, .18), rgba(245, 144, 10, .16));
+    color: var(--r2j-primary-text, #a85709);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+/* ---------- Roadmap panel ("Available in Early Access" / "Coming next") ---------- */
+
+.roadmap-card {
+    border: 1px solid var(--r2j-border, rgba(15, 23, 42, .08));
+    border-radius: 1.1rem;
+    padding: 1.75rem;
+    background: var(--bs-body-bg);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+
+.roadmap-check {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: rgba(34, 197, 94, .14);
+    color: #16a34a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    flex-shrink: 0;
+}
+
+[data-bs-theme="dark"] .roadmap-check {
+    background: rgba(34, 197, 94, .22);
+    color: #4ade80;
+}
+
+.roadmap-tile {
+    border-radius: 1rem !important;
+    background: var(--bs-body-bg);
+    transition: border-color .2s ease, transform .2s ease;
+}
+
+.roadmap-tile:hover {
+    border-color: rgba(245, 144, 10, .45) !important;
+    transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .roadmap-tile {
+        transition: none;
+    }
+
+    .roadmap-tile:hover {
+        transform: none;
+    }
+}
+
+.badge-coming-soon {
+    font-size: 0.7rem;
+    vertical-align: middle;
+}
+
+/* ---------- Steps ("How it will work") ---------- */
+
+.steps-row {
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    .steps-row::before {
+        content: "";
+        position: absolute;
+        top: 1.25rem;
+        left: calc(100% / 6);
+        right: calc(100% / 6);
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--r2j-border, rgba(15, 23, 42, .14)) 15%, var(--r2j-border, rgba(15, 23, 42, .14)) 85%, transparent);
+        z-index: 0;
+    }
+}
+
+.step-number {
+    position: relative;
+    z-index: 1;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--r2j-gradient);
+    /* Navy, not white - the gradient runs into a light gold at one end,
+       where white text would be unreadable; navy holds up across the
+       whole gradient (>8:1 against every stop). */
+    color: var(--r2j-ink, #0a1f47);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(245, 144, 10, .35);
+}
+
+/* ---------- CTA band ---------- */
+
+.cta-section {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    color: #fff;
+    background:
+        radial-gradient(65% 85% at 18% 20%, rgba(254, 228, 4, .38), transparent 60%),
+        radial-gradient(60% 85% at 85% 30%, rgba(245, 144, 10, .48), transparent 60%),
+        var(--r2j-ambient-base);
+}
+
+.cta-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(70% 90% at 50% 50%, black, transparent 95%);
+    mask-image: radial-gradient(70% 90% at 50% 50%, black, transparent 95%);
+}
+
+.cta-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------- Accordion (FAQ) ---------- */
+
+.accordion-button:not(.collapsed) {
+    background: var(--r2j-primary-soft, rgba(245, 144, 10, .1));
+    color: var(--r2j-ink, #0a1f47);
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 3px var(--r2j-primary-soft, rgba(245, 144, 10, .1));
+    border-color: var(--r2j-primary-text, #a85709);
+}
+
+.accordion-button:not(.collapsed)::after {
+    filter: hue-rotate(180deg) saturate(3);
+}
+
+/* ---------- Site nav: logo + active link ---------- */
+
+.site-nav .navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+}
+
+.site-nav .navbar-brand img {
+    height: 34px;
+    width: auto;
+}
+
+.site-nav .nav-link {
+    position: relative;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.site-nav .nav-link.active {
+    color: var(--r2j-primary-text, #a85709) !important;
+}
+
+.site-nav .nav-link.active::after {
+    content: "";
+    position: absolute;
+    left: .75rem;
+    right: .75rem;
+    bottom: -2px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--r2j-gradient);
+}
+
+/* ---------- Page header band (shared across public listing pages) ---------- */
+
+.page-header {
+    position: relative;
+    padding-block: 3rem 2.5rem;
+    background: var(--r2j-tint);
+    overflow: hidden;
+}
+
+.page-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60% 100% at 85% 0%, rgba(245, 144, 10, .12), transparent 65%);
+    pointer-events: none;
+}
+
+.page-header .container {
+    position: relative;
+    z-index: 1;
+}
+
+.page-header h1 {
+    margin-bottom: .5rem;
+}
+
+.page-header p {
+    max-width: 640px;
+}
+
+/* ---------- Search / filter panel (Jobs, and reused wherever a search
+   bar is needed) ---------- */
+
+.search-panel {
+    background: var(--bs-body-bg);
+    border: 1px solid var(--r2j-border, rgba(15, 23, 42, .08));
+    border-radius: 1rem;
+    box-shadow: var(--r2j-shadow-md, 0 8px 24px rgba(15, 23, 42, .08));
+    padding: 1.25rem;
+}
+
+.search-panel .form-label {
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--r2j-text-muted, #64748b);
+    margin-bottom: .3rem;
+}
+
+.search-panel .form-control,
+.search-panel .form-select {
+    height: 2.75rem;
+}
+
+.search-panel .input-icon {
+    position: relative;
+}
+
+.search-panel .input-icon i {
+    position: absolute;
+    left: .85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--r2j-text-muted, #64748b);
+    pointer-events: none;
+}
+
+.search-panel .input-icon .form-control {
+    padding-left: 2.4rem;
+}
+
+.search-panel .btn-search {
+    height: 2.75rem;
+    min-width: 7rem;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+/* ---------- Filter chips (Research Hub type filter, reusable) ---------- */
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: .4rem .95rem;
+    border-radius: 999px;
+    border: 1px solid var(--r2j-border, rgba(15, 23, 42, .12));
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    font-size: .8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color .15s ease, background-color .15s ease, color .15s ease;
+}
+
+.filter-chip:hover {
+    border-color: var(--r2j-primary-text, #a85709);
+    color: var(--r2j-primary-text, #a85709);
+}
+
+.filter-chip.active {
+    background: var(--r2j-primary, #f5900a);
+    border-color: var(--r2j-primary, #f5900a);
+    color: var(--r2j-ink, #0a1f47);
+    font-weight: 600;
+}
+
+/* ---------- Listing cards (Jobs, Research Hub, and similar) ---------- */
+
+.listing-card {
+    border: 1px solid var(--r2j-border, rgba(15, 23, 42, .08));
+    border-radius: 1rem;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.listing-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--r2j-shadow-md, 0 8px 24px rgba(15, 23, 42, .08));
+    border-color: rgba(245, 144, 10, .35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .listing-card {
+        transition: none;
+    }
+
+    .listing-card:hover {
+        transform: none;
+    }
+}
+
+.listing-card__logo {
+    width: 52px;
+    height: 52px;
+    border-radius: .65rem;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.listing-card__logo-fallback {
+    width: 52px;
+    height: 52px;
+    border-radius: .65rem;
+    background: linear-gradient(135deg, rgba(254, 228, 4, .18), rgba(245, 144, 10, .16));
+    color: var(--r2j-primary-text, #a85709);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+/* ---------- Empty state ---------- */
+
+.empty-state {
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    border: 1px dashed var(--r2j-border, rgba(15, 23, 42, .14));
+    border-radius: 1rem;
+    background: var(--r2j-tint);
+}
+
+.empty-state .empty-state__icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(254, 228, 4, .25), rgba(245, 144, 10, .2));
+    color: var(--r2j-primary-text, #a85709);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+    font-size: 1.05rem;
+    margin-bottom: .35rem;
+}
+
+.empty-state .text-muted {
+    /* --r2j-text-muted (#64748b) only clears WCAG AA (4.5:1) against
+       white/near-white surfaces (4.76:1 / 4.55:1) - on this block's warm
+       --r2j-tint background it drops to 4.44:1, so it needs a slightly
+       darker shade here specifically. !important matches app.css's
+       .text-muted rule, which is also !important and would otherwise win. */
+    color: #5b6472 !important;
+}
+
+/* ---------- Footer (navy band) ---------- */
+
+.site-footer {
+    background: var(--r2j-ambient-base);
+    color: rgba(255, 255, 255, .82);
+}
+
+.site-footer .footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    color: #fff;
+}
+
+.site-footer .footer-brand img {
+    height: 32px;
+    width: auto;
+}
+
+.site-footer .text-uppercase {
+    color: rgba(255, 255, 255, .5) !important;
+}
+
+.site-footer hr {
+    border-color: rgba(255, 255, 255, .12);
+    opacity: 1;
+}
+
+/* Scroll reveal */
+.reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-visible {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

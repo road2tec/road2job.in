@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Road2Job — Career infrastructure for students, employers &amp; campuses</title>
+<meta name="description" content="Road2Job connects students, employers, training institutes and colleges through one verified, role-based system.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;650;700;900&family=Inter:wght@375;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Colors */
+    --accent-teal: #14b8a6;
+    --accent-teal-deep: #0d9488;
+    --ink: #1d242f;
+    --graphite: #111827;
+    --slate: #6b7280;
+    --steel: #718096;
+    --fog: #9ca3af;
+    --mist: #e2e8f0;
+    --bone: #f3f4f6;
+    --paper: #ffffff;
+
+    /* Fonts */
+    --font-display: 'Sora', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* Radii */
+    --radius-nav: 6px;
+    --radius-card: 10px;
+    --radius-icon: 6px;
+    --radius-btn: 6px;
+    --radius-code: 10px;
+
+    --shadow-subtle: 0 1px 2px 0 rgba(0,0,0,.04);
+
+    --page-max: 1200px;
+    --section-gap: 80px;
+    --card-pad: 24px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--graphite);
+    font-family: var(--font-body);
+    font-feature-settings: "cv01","cv02","cv06","cv07","cv08","cv10";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img, svg { display: block; max-width: 100%; }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding-inline: 24px;
+  }
+
+  /* ---------- Type scale ---------- */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 64px;
+    line-height: 1.13;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .heading-lg {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+  }
+  .heading {
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: 36px;
+    line-height: 1.13;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+  }
+  .subheading {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.33;
+    color: var(--ink);
+  }
+  .body-lg {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.33;
+    color: var(--slate);
+  }
+  .body-copy {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.39;
+    color: var(--slate);
+  }
+  .body-sm { font-size: 16px; line-height: 1.5; color: var(--slate); }
+  .caption { font-size: 14px; line-height: 1.43; color: var(--slate); }
+  .micro { font-size: 11px; line-height: 1.45; letter-spacing: 0.03em; color: var(--fog); text-transform: uppercase; }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--paper);
+    border-bottom: 1px solid var(--mist);
+    box-shadow: var(--shadow-subtle);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    gap: 24px;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo .dot { width: 8px; height: 8px; border-radius: 2px; background: var(--accent-teal); }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: var(--radius-nav);
+    transition: background-color .15s ease;
+  }
+  .nav-links a:hover { background: var(--bone); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--mist);
+    border-radius: var(--radius-nav);
+    padding: 6px 10px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--paper);
+  }
+  .status-pill .led {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-teal);
+    box-shadow: 0 0 0 3px rgba(20,184,166,.15);
+  }
+  .nav-login { font-size: 14px; font-weight: 500; color: var(--ink); text-decoration: none; padding: 8px 4px; }
+
+  /* ---------- Buttons ---------- */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-teal);
+    color: #ffffff;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    border: none;
+    border-radius: var(--radius-btn);
+    padding: 11px 18px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color .15s ease;
+  }
+  .btn-primary:hover { background: var(--accent-teal-deep); }
+
+  .code-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--paper);
+    border: 1px solid var(--mist);
+    border-radius: var(--radius-btn);
+    padding: 9px 14px;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--graphite);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .code-pill .prompt { color: var(--slate); }
+  .code-pill .val { color: var(--accent-teal-deep); font-weight: 500; }
+  .code-pill .copy-icon { color: var(--fog); flex-shrink: 0; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding-block: 104px 80px;
+    text-align: center;
+    background:
+      linear-gradient(rgba(13,148,136,.07) 0%, rgba(13,148,136,0) 100%);
+    background-size: 100% 340px;
+    background-repeat: no-repeat;
+    position: relative;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--mist);
+    border-radius: 999px;
+    padding: 6px 14px;
+    margin-bottom: 24px;
+  }
+  .eyebrow .led { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-teal); }
+  .hero h1 { margin: 0 0 24px; }
+  .hero .body-lg { max-width: 620px; margin: 0 auto 40px; }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .hero-note { color: var(--fog); font-size: 13px; }
+
+  /* ---------- Sections ---------- */
+  section { padding-block: var(--section-gap); }
+  section.tight { padding-block: 48px; }
+  .section-head { max-width: 640px; margin: 0 auto 48px; text-align: center; }
+  .section-head.left { margin: 0 0 48px; text-align: left; }
+  .section-head .heading { margin: 0 0 12px; }
+  .section-head .body-copy { margin: 0; }
+
+  /* ---------- Feature cards ---------- */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--mist);
+    border-radius: var(--radius-card);
+    padding: var(--card-pad);
+  }
+  .icon-tile {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-icon);
+    background: rgba(20,184,166,.1);
+    color: var(--accent-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+  .card p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--slate);
+    margin: 0 0 16px;
+  }
+  .term {
+    background: var(--bone);
+    border: 1px solid var(--mist);
+    border-radius: var(--radius-code);
+    padding: 12px 14px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--slate);
+  }
+  .term .line { white-space: pre; }
+  .term .k { color: var(--slate); }
+  .term .v { color: var(--accent-teal-deep); font-weight: 500; }
+  .term .prompt { color: var(--fog); }
+
+  /* ---------- System / two-column ---------- */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .split .heading { margin: 0 0 16px; }
+  .split .body-copy { margin: 0 0 32px; }
+  .checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .checklist li { display: flex; gap: 12px; align-items: flex-start; font-size: 15px; color: var(--ink); }
+  .check {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(20,184,166,.12);
+    color: var(--accent-teal-deep);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .panel {
+    background: var(--bone);
+    border: 1px solid var(--mist);
+    border-radius: var(--radius-code);
+    padding: 20px;
+  }
+  .panel-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .panel-titlebar span {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--mist);
+  }
+  .panel pre {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--graphite);
+    overflow-x: auto;
+  }
+  .panel .k { color: var(--slate); }
+  .panel .s { color: var(--accent-teal-deep); }
+  .panel .n { color: #b45309; }
+  .panel .b { color: var(--ink); font-weight: 500; }
+
+  /* ---------- Persona grid ---------- */
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .persona {
+    border: 1px solid var(--mist);
+    border-radius: var(--radius-card);
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .persona .icon-tile { margin-inline: auto; }
+  .persona h4 { font-size: 15px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+  .persona p { font-size: 13px; color: var(--slate); margin: 0; line-height: 1.5; }
+
+  /* ---------- CTA band ---------- */
+  .cta-band {
+    border: 1px solid var(--mist);
+    border-radius: var(--radius-card);
+    padding: 64px 32px;
+    text-align: center;
+    background: var(--bone);
+  }
+  .cta-band .heading { margin: 0 0 12px; }
+  .cta-band .body-copy { max-width: 480px; margin: 0 auto 32px; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--mist);
+    padding-block: 40px;
+  }
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-inner .caption { margin: 0; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .display { font-size: 42px; letter-spacing: 0.04em; }
+    .heading-lg { font-size: 30px; letter-spacing: 0.05em; }
+    .heading { font-size: 26px; letter-spacing: 0.03em; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .split { grid-template-columns: 1fr; gap: 32px; }
+    .nav-links { display: none; }
+    .hero { padding-block: 64px 48px; }
+    section { padding-block: 56px; }
+    .hero-actions { flex-direction: column; align-items: stretch; }
+    .code-pill { font-size: 13px; justify-content: center; }
+    .footer-inner { justify-content: center; text-align: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="logo"><span class="dot"></span>Road2Job</a>
+    <ul class="nav-links">
+      <li><a href="#">Jobs</a></li>
+      <li><a href="#">Institutes</a></li>
+      <li><a href="#">Colleges</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="status-pill"><span class="led"></span>early access</span>
+      <a href="#" class="nav-login">Login</a>
+      <a href="#" class="btn-primary">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <span class="eyebrow"><span class="led"></span>road2job / early access</span>
+    <h1 class="display">Career infrastructure,<br>not a job board.</h1>
+    <p class="body-lg">Road2Job connects students, employers, training institutes and colleges through one verified, role-based system — structured profiles, AI-assisted matching, and campus placement tools, built module by module.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Create free account</a>
+      <a href="#" class="code-pill">
+        <span class="prompt">match_score:</span><span class="val">92</span><span class="prompt">, verified:</span><span class="val">true</span>
+        <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </a>
+    </div>
+    <p class="hero-note">Free to join · No credit card required</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="heading">Built for how hiring actually works</h2>
+      <p class="body-copy">One system, three sides — each with real tooling, not a shared inbox.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="icon-tile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+        </div>
+        <h3>Students</h3>
+        <p>Structured education, skills and project data — auto-compiled into a resume and scored against real postings.</p>
+        <div class="term"><pre class="line"><span class="prompt">$</span> resume --score
+<span class="k">ats_score:</span> <span class="v">78%</span>
+<span class="k">skills_matched:</span> <span class="v">5/7</span></pre></div>
+      </div>
+      <div class="card">
+        <div class="icon-tile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <h3>Employers</h3>
+        <p>Post roles, review applicants ranked by skill match, and run structured mock-interview pipelines.</p>
+        <div class="term"><pre class="line"><span class="prompt">$</span> applicants --rank
+<span class="k">shortlisted:</span> <span class="v">4</span>
+<span class="k">avg_match:</span> <span class="v">81%</span></pre></div>
+      </div>
+      <div class="card">
+        <div class="icon-tile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1m4 0h1m-6 4h1m4 0h1m-6 4h1m4 0h1"/></svg>
+        </div>
+        <h3>Institutes &amp; colleges</h3>
+        <p>Courses, faculty and placement records live on a public profile — enrollment and campus drives run through one dashboard.</p>
+        <div class="term"><pre class="line"><span class="prompt">$</span> placements --status
+<span class="k">drives_open:</span> <span class="v">3</span>
+<span class="k">registered:</span> <span class="v">42</span></pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bone); border-top:1px solid var(--mist); border-bottom:1px solid var(--mist);">
+  <div class="wrap split">
+    <div>
+      <h2 class="heading">One connected system, not five disconnected tools</h2>
+      <p class="body-copy">Every module reads from the same verified profile — no re-entering data, no separate logins per feature.</p>
+      <ul class="checklist">
+        <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>Secure sign-up with mobile OTP verification</li>
+        <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>Role-based dashboards for every account type</li>
+        <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>Login history, device tracking &amp; session control</li>
+        <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>Internal resume &amp; job-matching engine</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <div class="panel-titlebar"><span></span><span></span><span></span></div>
+      <pre><span class="k">{</span>
+  <span class="s">"engines"</span><span class="k">:</span> [
+    <span class="s">"resume_compiler"</span>,
+    <span class="s">"match_scorer"</span>,
+    <span class="s">"interview_engine"</span>,
+    <span class="s">"assessment_engine"</span>
+  ],
+  <span class="s">"accounts"</span><span class="k">:</span> <span class="n">8</span> roles,
+  <span class="s">"status"</span><span class="k">:</span> <span class="b">"early_access"</span>
+<span class="k">}</span></pre>
+    </div>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="heading">Every side of the pipeline, one login</h2>
+    </div>
+    <div class="grid-4">
+      <div class="persona">
+        <div class="icon-tile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10 12 5 2 10l10 5 10-5Z"/></svg></div>
+        <h4>Students</h4>
+        <p>Career profile &amp; resume</p>
+      </div>
+      <div class="persona">
+        <div class="icon-tile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/></svg></div>
+        <h4>Employers</h4>
+        <p>Postings &amp; applicant tracking</p>
+      </div>
+      <div class="persona">
+        <div class="icon-tile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
+        <h4>Institutes</h4>
+        <p>Courses &amp; placement wall</p>
+      </div>
+      <div class="persona">
+        <div class="icon-tile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg></div>
+        <h4>Colleges</h4>
+        <p>Campus drives &amp; alumni</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta-band">
+      <h2 class="heading">Be part of it from day one.</h2>
+      <p class="body-copy">Create your account now and grow with the platform as new modules ship.</p>
+      <a href="#" class="btn-primary">Create free account</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <a href="#" class="logo" style="font-size:15px;"><span class="dot"></span>Road2Job</a>
+    <p class="caption">© 2026 Road2Job. Built for students, employers, institutes &amp; colleges.</p>
+  </div>
+</footer>
+
+</body>
+</html>

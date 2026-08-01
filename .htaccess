@@ -1,0 +1,11 @@
+# Defense in depth: on Hostinger this project's web root is public_html, one
+# level below this file (locally it's /public - both are protected the same way).
+# If this file is reachable at all, something is misconfigured - deny everything
+# outside the web root so app/, core/, config/, storage/ and .env are never served.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>
