@@ -125,14 +125,23 @@ $router->group(['middleware' => ['guest', 'csrf']], function (Core\Router $route
     $router->get('/verify-email', [AuthController::class, 'verifyEmail']);
     $router->post('/resend-verification-email', [AuthController::class, 'resendVerificationEmail']);
 
-    $router->get('/login', [AuthController::class, 'showLogin']);
-    $router->post('/login', [AuthController::class, 'login']);
-
     $router->get('/forgot-password', [AuthController::class, 'showForgotPassword']);
     $router->post('/forgot-password', [AuthController::class, 'sendResetLink']);
 
     $router->get('/reset-password', [AuthController::class, 'showResetPassword']);
     $router->post('/reset-password', [AuthController::class, 'resetPassword']);
+});
+
+// /login is deliberately NOT behind 'guest' middleware - an already-authenticated
+// session must still be able to reach the login form and submit different
+// credentials to switch accounts. attemptLogin() -> establishSession() already
+// correctly regenerates the session ID and overwrites '_user', so this is safe;
+// previously 'guest' bounced any authenticated request (GET or POST) straight to
+// /dashboard, meaning a logged-in user could never switch to a different account
+// without first explicitly logging out.
+$router->group(['middleware' => ['csrf']], function (Core\Router $router) {
+    $router->get('/login', [AuthController::class, 'showLogin']);
+    $router->post('/login', [AuthController::class, 'login']);
 });
 
 $router->group(['middleware' => ['auth', 'csrf']], function (Core\Router $router) {

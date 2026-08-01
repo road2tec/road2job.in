@@ -27,8 +27,17 @@
                     <input class="form-check-input" type="checkbox" id="themeToggle">
                     <label class="form-check-label small" for="themeToggle">Dark</label>
                 </div>
-                <a href="<?= url('/login') ?>" class="btn btn-outline-primary btn-sm">Login</a>
-                <a href="<?= url('/register') ?>" class="btn btn-primary btn-sm">Get Started</a>
+                <?php if (is_authenticated()): $navUser = auth(); ?>
+                    <span class="small text-muted d-none d-xl-inline"><?= e($navUser['full_name']) ?></span>
+                    <a href="<?= url('/dashboard') ?>" class="btn btn-outline-primary btn-sm">Dashboard</a>
+                    <form action="<?= url('/logout') ?>" method="post" class="d-inline">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-primary btn-sm">Logout</button>
+                    </form>
+                <?php else: ?>
+                    <a href="<?= url('/login') ?>" class="btn btn-outline-primary btn-sm">Login</a>
+                    <a href="<?= url('/register') ?>" class="btn btn-primary btn-sm">Get Started</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

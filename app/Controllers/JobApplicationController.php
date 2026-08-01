@@ -62,8 +62,8 @@ class JobApplicationController extends Controller
             $coverNote !== '' ? $coverNote : null
         );
 
-        Session::flash('success', 'Application submitted!');
-        $this->redirect('/jobs/' . $jobPostingId);
+        Session::flash('success', 'Application submitted! You can track its status below.');
+        $this->redirect('/dashboard/applications');
     }
 
     public function index(Request $request): void

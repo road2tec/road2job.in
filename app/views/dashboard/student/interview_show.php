@@ -16,7 +16,7 @@ $questionsForJs = array_map(fn ($q) => [
         <div class="card-header"><i class="bi bi-camera-video me-2 text-primary"></i>Your Recording</div>
         <div class="card-body">
             <?php if (!empty($interviewSession['video_path'])): ?>
-                <video controls style="width:100%;max-width:640px;border-radius:var(--r2j-radius);" src="<?= url($interviewSession['video_path']) ?>"></video>
+                <video controls controlsList="nodownload noremoteplayback" disablePictureInPicture oncontextmenu="return false;" style="width:100%;max-width:640px;border-radius:var(--r2j-radius);" src="<?= url($interviewSession['video_path']) ?>"></video>
             <?php else: ?>
                 <p class="text-muted small mb-0">No recording is available for this interview.</p>
             <?php endif; ?>
@@ -141,7 +141,7 @@ $questionsForJs = array_map(fn ($q) => [
                 <div class="card-body">
                     <div class="row g-4 align-items-start">
                         <div class="col-md-6">
-                            <video id="finalRecordingPreview" controls style="width:100%;max-width:400px;border-radius:var(--r2j-radius);"></video>
+                            <video id="finalRecordingPreview" controls controlsList="nodownload noremoteplayback" disablePictureInPicture oncontextmenu="return false;" style="width:100%;max-width:400px;border-radius:var(--r2j-radius);"></video>
                         </div>
                         <div class="col-md-6">
                             <p class="small mb-1">Duration: <strong id="finalDuration">0:00</strong></p>

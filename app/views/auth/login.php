@@ -5,6 +5,13 @@
                 <h1 class="h4 mb-1 font-display">Welcome back</h1>
                 <p class="text-muted small mb-4">Log in to your Road2Job account.</p>
 
+                <?php if (is_authenticated()): $current = auth(); ?>
+                    <div class="alert alert-info small mb-4">
+                        You're currently logged in as <strong><?= e($current['full_name']) ?></strong> (<?= e($current['email']) ?>).
+                        <a href="<?= url('/dashboard') ?>">Continue to your dashboard</a>, or log in below with different credentials to switch accounts.
+                    </div>
+                <?php endif; ?>
+
                 <form method="post" action="<?= url('/login') ?>" data-guard-submit>
                     <?= csrf_field() ?>
 

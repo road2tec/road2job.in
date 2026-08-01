@@ -18,7 +18,7 @@ $legacyVideoQuestions = $hasSessionVideo ? [] : array_filter($questions, fn ($q)
     <div class="card mb-3">
         <div class="card-header"><i class="bi bi-camera-video me-2 text-primary"></i>Full Recording</div>
         <div class="card-body">
-            <video id="interviewFullVideo" controls style="width:100%;max-width:640px;border-radius:var(--r2j-radius);" src="<?= url($interviewSession['video_path']) ?>"></video>
+            <video id="interviewFullVideo" controls controlsList="nodownload noremoteplayback" disablePictureInPicture oncontextmenu="return false;" style="width:100%;max-width:640px;border-radius:var(--r2j-radius);" src="<?= url($interviewSession['video_path']) ?>"></video>
             <?php if (!empty($interviewSession['video_duration_seconds'])): ?>
                 <p class="small text-muted mt-2 mb-0">Duration: <?= (int) floor($interviewSession['video_duration_seconds'] / 60) ?>:<?= str_pad((string) ($interviewSession['video_duration_seconds'] % 60), 2, '0', STR_PAD_LEFT) ?></p>
             <?php endif; ?>
@@ -44,7 +44,7 @@ $legacyVideoQuestions = $hasSessionVideo ? [] : array_filter($questions, fn ($q)
             <?php elseif ($q['round_type'] === 'coding'): ?>
                 <pre class="bg-light p-3 rounded small mb-0" style="white-space: pre-wrap;"><?= e($q['text_answer']) ?></pre>
             <?php elseif (!$hasSessionVideo && !empty($q['video_path'])): ?>
-                <video controls src="<?= url($q['video_path']) ?>" style="width:100%;max-width:480px;"></video>
+                <video controls controlsList="nodownload noremoteplayback" disablePictureInPicture oncontextmenu="return false;" src="<?= url($q['video_path']) ?>" style="width:100%;max-width:480px;"></video>
             <?php elseif ($hasSessionVideo): ?>
                 <p class="text-muted small mb-0">Answered in the full recording above.</p>
             <?php else: ?>
