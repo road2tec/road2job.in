@@ -1,4 +1,4 @@
-<section class="page-header">
+<section class="page-header <?= e($extraClass ?? '') ?>">
     <div class="container" style="max-width: 840px;">
         <h1 class="fw-bold font-display"><?= e($title) ?></h1>
         <?php if (!empty($subtitle)): ?>

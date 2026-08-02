@@ -98,7 +98,7 @@
     <?php endif; ?>
 
     <div class="row g-3 mb-4">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-body">
                     <div class="small text-muted mb-1">Institute</div>
@@ -106,19 +106,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-body">
                     <div class="small text-muted mb-1">Published courses</div>
                     <div class="h6 mb-0"><?= (int) $publishedCourseCount ?></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="small text-muted mb-1">Pending enrollment requests</div>
-                    <div class="h6 mb-0"><?= (int) $pendingEnrollmentCount ?></div>
                 </div>
             </div>
         </div>
@@ -131,7 +123,6 @@
             ['title' => 'Courses', 'text' => 'Create and manage your course listings.', 'icon' => 'bi-mortarboard', 'href' => '/dashboard/institute/courses'],
             ['title' => 'Add placement', 'text' => 'Record a genuine student placement.', 'icon' => 'bi-graph-up-arrow', 'href' => '/dashboard/institute'],
             ['title' => 'Add update', 'text' => 'Post placement drives, admissions or events.', 'icon' => 'bi-megaphone', 'href' => '/dashboard/institute/updates'],
-            ['title' => 'Enrollment requests', 'text' => 'Review students interested in your courses.', 'icon' => 'bi-person-check', 'href' => '/dashboard/institute/enrollments'],
         ];
         if ($portfolioUrl !== null) {
             $quickLinks[] = ['title' => 'View public portfolio', 'text' => 'See your institute page as students see it.', 'icon' => 'bi-box-arrow-up-right', 'href' => null, 'external' => $portfolioUrl];

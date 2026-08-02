@@ -463,6 +463,34 @@
     font-weight: 600;
 }
 
+/* ---------- Compact search panel (Internshala-style single bar,
+   used where the default stacked-label search-panel reads too tall,
+   e.g. the institutes listing) ---------- */
+
+.page-header--compact {
+    padding-block: 1.75rem 1.25rem;
+}
+
+.search-panel--compact {
+    padding: .75rem .85rem;
+}
+
+.search-panel--compact .form-control,
+.search-panel--compact .form-select,
+.search-panel--compact .btn-search {
+    height: 2.35rem;
+    font-size: .875rem;
+}
+
+.search-panel--compact .input-icon .form-control {
+    padding-left: 2.2rem;
+}
+
+.search-panel--compact .input-icon i {
+    left: .7rem;
+    font-size: .875rem;
+}
+
 /* ---------- Filter chips (Research Hub type filter, reusable) ---------- */
 
 .filter-chip {

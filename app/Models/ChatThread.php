@@ -24,6 +24,22 @@ class ChatThread extends Model
         return static::findBy('chat_request_id', $chatRequestId);
     }
 
+    /**
+     * A thread, once created, is never deleted - so its existence alone
+     * means this employer/student pair is already connected. Used to stop
+     * a second chat request being sent to someone who already accepted one.
+     */
+    public static function findBetween(int $employerUserId, int $studentId): ?array
+    {
+        $stmt = Database::connection()->prepare(
+            "SELECT * FROM chat_threads WHERE employer_user_id = :employer_user_id AND student_id = :student_id LIMIT 1"
+        );
+        $stmt->execute(['employer_user_id' => $employerUserId, 'student_id' => $studentId]);
+        $row = $stmt->fetch();
+
+        return $row !== false ? $row : null;
+    }
+
     public static function touchLastMessage(int $threadId): void
     {
         static::update($threadId, ['last_message_at' => date('Y-m-d H:i:s')]);

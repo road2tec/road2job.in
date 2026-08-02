@@ -53,4 +53,26 @@ class InstituteUpdate extends Model
 
         return (int) $stmt->fetchColumn();
     }
+
+    /**
+     * Global chronological feed across every active institute's active
+     * updates - powers the student-facing "Institute Updates" page. No
+     * per-student personalization/follow concept exists, so this is simply
+     * the most recent real posts, newest first.
+     */
+    public static function recentAcrossInstitutes(int $limit = 30): array
+    {
+        $stmt = Database::connection()->prepare(
+            "SELECT u.*, i.name AS institute_name, i.logo_path AS institute_logo_path, i.city AS institute_city
+             FROM institute_updates u
+             JOIN institutes i ON i.id = u.institute_id
+             WHERE u.status = 'active' AND i.status = 'active'
+             ORDER BY u.created_at DESC
+             LIMIT :limit"
+        );
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
 }

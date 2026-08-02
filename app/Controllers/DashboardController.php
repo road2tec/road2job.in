@@ -8,7 +8,6 @@ use App\Models\CollegeDriveRegistration;
 use App\Models\Company;
 use App\Models\Institute;
 use App\Models\InstituteCourse;
-use App\Models\InstituteEnrollmentRequest;
 use App\Models\InstitutePlacement;
 use App\Models\InstituteUpdate;
 use App\Models\JobApplication;
@@ -53,8 +52,6 @@ class DashboardController extends Controller
                 $instituteId = (int) $institute['id'];
                 $courses = InstituteCourse::forInstitute($instituteId);
                 $extra['publishedCourseCount'] = count(array_filter($courses, fn ($c) => $c['status'] === 'published'));
-                $pendingRequests = array_filter(InstituteEnrollmentRequest::forInstitute($instituteId), fn ($r) => $r['status'] === 'pending');
-                $extra['pendingEnrollmentCount'] = count($pendingRequests);
 
                 // Real ranking/completion stats - InstituteRankingScorer
                 // already recomputes on every profile/placement/update
@@ -69,7 +66,6 @@ class DashboardController extends Controller
                 $extra['portfolioUrl'] = url('/institutes/' . $instituteId);
             } else {
                 $extra['publishedCourseCount'] = 0;
-                $extra['pendingEnrollmentCount'] = 0;
                 $extra['profileCompletionPercent'] = 0;
                 $extra['rankPosition'] = null;
                 $extra['activeInstituteCount'] = 0;

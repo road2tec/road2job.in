@@ -17,7 +17,6 @@ use App\Controllers\AdminSystemController;
 use App\Controllers\AdminUserController;
 use App\Controllers\AnalyticsController;
 use App\Controllers\AssessmentController;
-use App\Controllers\AssignmentController;
 use App\Controllers\AuthController;
 use App\Controllers\BlogController;
 use App\Controllers\CareerServicesController;
@@ -38,12 +37,12 @@ use App\Controllers\InstituteCertificateController;
 use App\Controllers\InstituteController;
 use App\Controllers\InstituteCourseController;
 use App\Controllers\InstituteDiscoveryController;
-use App\Controllers\InstituteEnrollmentController;
 use App\Controllers\InstituteFacultyController;
 use App\Controllers\InstituteGalleryController;
 use App\Controllers\InstitutePlacementController;
 use App\Controllers\InstituteReviewController;
 use App\Controllers\InstituteUpdateController;
+use App\Controllers\InstituteUpdateFeedController;
 use App\Controllers\CommunityController;
 use App\Controllers\InterviewController;
 use App\Controllers\JobAlertController;
@@ -104,7 +103,6 @@ $router->group(['middleware' => ['csrf']], function (Core\Router $router) {
     $router->post('/contact', [ContactController::class, 'submit']);
 
     $router->post('/institutes/{id}/reviews', [InstituteReviewController::class, 'store']);
-    $router->post('/institutes/courses/{courseId}/enroll', [InstituteEnrollmentController::class, 'request']);
     $router->post('/colleges/drives/{driveId}/register', [CollegeDriveRegistrationController::class, 'register']);
     $router->post('/jobs/{id}/apply', [JobApplicationController::class, 'apply']);
     $router->post('/jobs/{id}/save', [SavedJobController::class, 'toggle']);
@@ -272,10 +270,7 @@ $router->group(['middleware' => ['auth', 'csrf', 'role:student']], function (Cor
     $router->post('/dashboard/research/{id}', [ResearchController::class, 'update']);
     $router->post('/dashboard/research/{id}/delete', [ResearchController::class, 'destroy']);
 
-    $router->get('/dashboard/my-learning', [AssignmentController::class, 'myLearning']);
-    $router->get('/dashboard/my-learning/{courseId}', [AssignmentController::class, 'courseShow']);
-    $router->post('/dashboard/my-learning/{courseId}/assignments/{assignmentId}/submit', [AssignmentController::class, 'submit']);
-    $router->get('/dashboard/my-learning/{courseId}/certificate', [InstituteEnrollmentController::class, 'certificate']);
+    $router->get('/dashboard/institute-updates', [InstituteUpdateFeedController::class, 'index']);
 
     $router->get('/dashboard/settings', [SettingsController::class, 'show']);
     $router->post('/dashboard/settings/password', [SettingsController::class, 'updatePassword']);
@@ -349,16 +344,6 @@ $router->group(['middleware' => ['auth', 'csrf', 'role:institute']], function (C
     $router->get('/dashboard/institute/courses', [InstituteCourseController::class, 'index']);
 
     $router->get('/dashboard/institute/updates', [InstituteUpdateController::class, 'index']);
-
-    $router->get('/dashboard/institute/enrollments', [InstituteEnrollmentController::class, 'index']);
-    $router->post('/dashboard/institute/enrollments/{id}', [InstituteEnrollmentController::class, 'updateStatus']);
-
-    $router->get('/dashboard/institute/courses/{courseId}/assignments', [AssignmentController::class, 'index']);
-    $router->post('/dashboard/institute/courses/{courseId}/assignments', [AssignmentController::class, 'store']);
-    $router->post('/dashboard/institute/assignments/{id}', [AssignmentController::class, 'update']);
-    $router->post('/dashboard/institute/assignments/{id}/delete', [AssignmentController::class, 'destroy']);
-    $router->get('/dashboard/institute/assignments/{assignmentId}/submissions', [AssignmentController::class, 'submissions']);
-    $router->post('/dashboard/institute/submissions/{submissionId}/review', [AssignmentController::class, 'review']);
 
     $router->get('/dashboard/institute/roadmaps', [RoadmapController::class, 'manage']);
     $router->post('/dashboard/institute/roadmaps', [RoadmapController::class, 'store']);

@@ -1,11 +1,14 @@
 <?php
 
-define('BASE_PATH', dirname(__DIR__));
+// Two supported layouts: local dev has this file in public/ with app/,
+// core/, etc. one level up; the flattened production deploy (see
+// DEPLOYMENT.md) puts this file directly beside app/, core/, etc. Detect
+// which one we're in rather than hardcoding - app/ existing as a sibling
+// means we're already at the deployment root.
+define('BASE_PATH', is_dir(__DIR__ . '/app') ? __DIR__ : dirname(__DIR__));
 // Where publicly-served uploads/assets physically live - this file's own
-// directory (public/) here, but a different deployment layout (flattened
-// production, see DEPLOYMENT.md) sets this to the same value as BASE_PATH
-// instead. Anything writing to or resolving uploads/assets must use this,
-// never a hardcoded "public/..." path, so it works under either layout.
+// directory. Anything writing to or resolving uploads/assets must use
+// this, never a hardcoded "public/..." path, so it works under either layout.
 define('WEB_ROOT', __DIR__);
 
 // Composer's autoloader (PHPMailer, etc.) is optional - the app boots without it.

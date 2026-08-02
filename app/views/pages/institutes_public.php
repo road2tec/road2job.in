@@ -1,39 +1,28 @@
 <?php
 ob_start();
 ?>
-<form method="get" action="<?= url(current_path()) ?>" class="search-panel mt-2">
-    <div class="row g-3 align-items-end">
-        <div class="col-6 col-md-3">
-            <label class="form-label" for="institutes-public-city">City</label>
-            <div class="input-icon">
-                <i class="bi bi-geo-alt"></i>
-                <input id="institutes-public-city" type="text" name="city" class="form-control" placeholder="City" value="<?= e($filters['city']) ?>">
-            </div>
+<form method="get" action="<?= url(current_path()) ?>" class="search-panel search-panel--compact mt-2">
+    <div class="d-flex flex-wrap gap-2">
+        <div class="input-icon flex-grow-1" style="min-width: 160px;">
+            <i class="bi bi-geo-alt"></i>
+            <input type="text" name="city" class="form-control" placeholder="City" aria-label="City" value="<?= e($filters['city']) ?>">
         </div>
-        <div class="col-6 col-md-3">
-            <label class="form-label" for="institutes-public-type">Type</label>
-            <input id="institutes-public-type" type="text" name="institute_type" class="form-control" placeholder="e.g. Bootcamp" value="<?= e($filters['institute_type']) ?>">
+        <div class="input-icon flex-grow-1" style="min-width: 160px;">
+            <i class="bi bi-easel"></i>
+            <input type="text" name="institute_type" class="form-control" placeholder="Type, e.g. Bootcamp" aria-label="Institute type" value="<?= e($filters['institute_type']) ?>">
         </div>
-        <div class="col-6 col-md-3">
-            <label class="form-label" for="institutes-public-mode">Training mode</label>
-            <select id="institutes-public-mode" name="training_mode" class="form-select">
-                <option value="">Any</option>
-                <?php foreach (['Online', 'Offline', 'Hybrid'] as $mode): ?>
-                    <option value="<?= $mode ?>" <?= $filters['training_mode'] === $mode ? 'selected' : '' ?>><?= $mode ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="col-6 col-md-auto d-flex align-items-center">
-            <div class="form-check">
-                <input type="checkbox" name="verified_only" value="1" class="form-check-input" id="filterVerified" <?= !empty($filters['verified_only']) ? 'checked' : '' ?>>
-                <label class="form-check-label small" for="filterVerified">Verified only</label>
-            </div>
-        </div>
-        <div class="col-6 col-md-auto ms-md-auto">
-            <button type="submit" class="btn btn-primary btn-search w-100">
-                <i class="bi bi-search me-1"></i>Search
-            </button>
-        </div>
+        <button type="submit" class="btn btn-primary btn-search">
+            <i class="bi bi-search me-1"></i>Search
+        </button>
+    </div>
+    <div class="d-flex flex-wrap gap-2 mt-2">
+        <?php foreach (['' => 'Any mode', 'Online' => 'Online', 'Offline' => 'Offline', 'Hybrid' => 'Hybrid'] as $value => $label): ?>
+            <button type="submit" name="training_mode" value="<?= $value ?>" class="filter-chip <?= $filters['training_mode'] === $value ? 'active' : '' ?>"><?= $label ?></button>
+        <?php endforeach; ?>
+        <span class="vr d-none d-sm-block mx-1"></span>
+        <button type="submit" name="verified_only" value="<?= !empty($filters['verified_only']) ? '' : '1' ?>" class="filter-chip <?= !empty($filters['verified_only']) ? 'active' : '' ?>">
+            <i class="bi bi-patch-check me-1"></i>Verified only
+        </button>
     </div>
 </form>
 <?php
@@ -43,6 +32,7 @@ Core\View::partial('partials/page_header', [
     'title' => 'Training Institutes',
     'subtitle' => 'Browse institutes, their courses and placement records. Ranking reflects recent, genuine activity - not payment.',
     'below' => $searchForm,
+    'extraClass' => 'page-header--compact',
 ]);
 ?>
 
@@ -86,11 +76,20 @@ Core\View::partial('partials/page_header', [
                                         <?php if (($institute['verification_status'] ?? 'unverified') === 'verified'): ?>
                                             <span class="badge text-bg-light border"><i class="bi bi-patch-check-fill text-primary me-1"></i>Verified</span>
                                         <?php endif; ?>
+                                        <?php if ((float) ($institute['average_rating'] ?? 0) > 0): ?>
+                                            <span class="small fw-semibold"><i class="bi bi-star-fill text-warning me-1"></i><?= number_format((float) $institute['average_rating'], 1) ?><span class="text-muted fw-normal"> (<?= (int) $institute['review_count'] ?>)</span></span>
+                                        <?php endif; ?>
                                     </div>
-                                    <div class="small text-muted">
+                                    <div class="small text-muted mb-2">
                                         <?php $displayLocation = trim(($institute['city'] ?? '') . (!empty($institute['state']) ? ', ' . $institute['state'] : '')) ?: ($institute['location'] ?? ''); ?>
                                         <?php if (!empty($displayLocation)): ?><i class="bi bi-geo-alt me-1"></i><?= e($displayLocation) ?><?php endif; ?>
                                         <?php if (!empty($institute['institute_type'])): ?><span class="mx-1">&middot;</span><?= e($institute['institute_type']) ?><?php endif; ?>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge text-bg-light border"><i class="bi bi-mortarboard me-1"></i><?= (int) $institute['course_count'] ?> course<?= (int) $institute['course_count'] === 1 ? '' : 's' ?></span>
+                                        <?php if ((int) $institute['placement_count'] > 0): ?>
+                                            <span class="badge text-bg-light border"><i class="bi bi-graph-up-arrow me-1"></i><?= (int) $institute['placement_count'] ?> placed</span>
+                                        <?php endif; ?>
                                     </div>
                                 </a>
                                 <i class="bi bi-arrow-right text-muted d-none d-sm-block"></i>

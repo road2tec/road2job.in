@@ -35,6 +35,13 @@ class ChatController extends Controller
         }
 
         $studentId = (int) $application['student_id'];
+        $existingThread = ChatThread::findBetween((int) $sessionUser['id'], $studentId);
+
+        if ($existingThread !== null) {
+            Session::flash('success', "You're already connected with this candidate.");
+            $this->redirect('/dashboard/chat/' . $existingThread['id']);
+            return;
+        }
 
         if (ChatRequest::hasActiveRequest((int) $sessionUser['id'], $studentId)) {
             Session::flash('error', 'You already have a pending chat request with this candidate.');

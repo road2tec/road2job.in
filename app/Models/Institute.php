@@ -74,8 +74,15 @@ class Institute extends Model
         $countStmt->execute($params);
         $total = (int) $countStmt->fetchColumn();
 
+        // Real, never-fabricated per-card stats via subqueries (no N+1) -
+        // same approach as JobPosting::search()'s applicant-count subquery.
         $stmt = Database::connection()->prepare(
-            "SELECT * FROM institutes WHERE {$where} ORDER BY rank_score DESC, created_at DESC LIMIT :limit OFFSET :offset"
+            "SELECT institutes.*,
+                    (SELECT COUNT(*) FROM institute_courses ic WHERE ic.institute_id = institutes.id AND ic.status = 'published') AS course_count,
+                    (SELECT COUNT(*) FROM institute_placements ip WHERE ip.institute_id = institutes.id AND ip.status = 'active') AS placement_count,
+                    (SELECT AVG(rating) FROM institute_reviews ir WHERE ir.institute_id = institutes.id) AS average_rating,
+                    (SELECT COUNT(*) FROM institute_reviews ir2 WHERE ir2.institute_id = institutes.id) AS review_count
+             FROM institutes WHERE {$where} ORDER BY rank_score DESC, created_at DESC LIMIT :limit OFFSET :offset"
         );
         foreach ($params as $key => $value) {
             $stmt->bindValue(":{$key}", $value);

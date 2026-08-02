@@ -1883,6 +1883,13 @@ CREATE TABLE IF NOT EXISTS chat_messages (
     CONSTRAINT fk_chat_messages_sender FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Road2Job - Removes the course-enrollment system (institutes pay for
+-- promotion/visibility, not course sales - no student "enroll" action).
+-- No incoming FKs into any of these three, safe to drop.
+DROP TABLE IF EXISTS institute_assignment_submissions;
+DROP TABLE IF EXISTS institute_course_assignments;
+DROP TABLE IF EXISTS institute_enrollment_requests;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
@@ -1892,7 +1899,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ============================================================
 INSERT INTO users (role_id, full_name, email, phone, password_hash, status, email_verified_at, phone_verified_at, created_at, updated_at)
 SELECT r.id, 'Super Admin', 'admin@road2job.in', '9999999999',
-       '$2y$10$dut/m9FFzAKgYFbQoHhcBuxnJ3yI9YE1EI81X8qjFJA8hesRbWhXS',
+       '$2y$10$6gqC9H0sfGOpT52FTLuctuSGy71txRjCesBpgcE0ZasBkh6q6ThYa',
        'active', NOW(), NOW(), NOW(), NOW()
 FROM roles r WHERE r.slug = 'super_admin'
 ON DUPLICATE KEY UPDATE email = VALUES(email);

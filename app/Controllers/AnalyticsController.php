@@ -9,7 +9,6 @@ use App\Models\CollegeDriveRegistration;
 use App\Models\Company;
 use App\Models\Institute;
 use App\Models\InstituteCourse;
-use App\Models\InstituteEnrollmentRequest;
 use App\Models\InterviewSession;
 use App\Models\JobApplication;
 use App\Models\JobPosting;
@@ -89,13 +88,12 @@ class AnalyticsController extends Controller
         $institute = Institute::findByUserId($userId);
 
         if ($institute === null) {
-            return ['enrollmentFunnel' => [], 'courseFunnel' => []];
+            return ['courseFunnel' => []];
         }
 
         $instituteId = (int) $institute['id'];
 
         return [
-            'enrollmentFunnel' => $this->countByStatus(InstituteEnrollmentRequest::forInstitute($instituteId)),
             'courseFunnel' => $this->countByStatus(InstituteCourse::forInstitute($instituteId)),
         ];
     }

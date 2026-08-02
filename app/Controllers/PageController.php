@@ -14,7 +14,6 @@ use App\Models\Event;
 use App\Models\Institute;
 use App\Models\InstituteCertificate;
 use App\Models\InstituteCourse;
-use App\Models\InstituteEnrollmentRequest;
 use App\Models\InstituteFaculty;
 use App\Models\InstituteGallery;
 use App\Models\InstitutePlacement;
@@ -246,7 +245,7 @@ class PageController extends Controller
     {
         $institute = Institute::find((int) $id);
 
-        if ($institute === null || empty($institute['name'])) {
+        if ($institute === null || empty($institute['name']) || ($institute['status'] ?? 'active') !== 'active') {
             Response::abort(404);
             return;
         }
@@ -276,13 +275,6 @@ class PageController extends Controller
         $alreadyReviewed = $isStudent && InstituteReview::findByInstituteAndUser($instituteId, (int) $sessionUser['id']) !== null;
 
         $courses = InstituteCourse::publishedForInstitute($instituteId);
-
-        if ($isStudent) {
-            foreach ($courses as &$course) {
-                $course['already_requested'] = InstituteEnrollmentRequest::hasActiveRequest((int) $course['id'], (int) $sessionUser['id']);
-            }
-            unset($course);
-        }
 
         $placementFilters = [
             'company' => trim((string) $request->input('company', '')),

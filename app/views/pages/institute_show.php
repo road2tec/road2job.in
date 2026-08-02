@@ -172,18 +172,6 @@ $visibleSections = array_keys(array_filter($sections));
                                     <?php endif; ?>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="small text-muted"><?= !empty($course['fee']) ? '&#8377;' . number_format((float) $course['fee']) : 'Contact for fee' ?></span>
-                                        <?php if ($isStudent): ?>
-                                            <?php if (!empty($course['already_requested'])): ?>
-                                                <span class="badge text-bg-light border">Requested</span>
-                                            <?php else: ?>
-                                                <form method="post" action="<?= url('/institutes/courses/' . $course['id'] . '/enroll') ?>" data-guard-submit>
-                                                    <?= csrf_field() ?>
-                                                    <button type="submit" class="btn btn-sm btn-primary">Contact Institute</button>
-                                                </form>
-                                            <?php endif; ?>
-                                        <?php elseif (!$isOwnInstitute): ?>
-                                            <a href="<?= url('/login') ?>" class="small fw-semibold">Log in for details</a>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

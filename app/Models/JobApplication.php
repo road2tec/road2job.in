@@ -34,7 +34,10 @@ class JobApplication extends Model
     public static function forStudent(int $studentId): array
     {
         $stmt = Database::connection()->prepare(
-            "SELECT a.*, jp.title AS job_title, jp.description AS job_description, jp.requirements AS job_requirements, c.name AS company_name
+            "SELECT a.*, jp.title AS job_title, jp.description AS job_description, jp.requirements AS job_requirements,
+                    jp.type AS job_type, jp.location AS job_location, jp.is_remote AS job_is_remote,
+                    jp.min_salary AS job_min_salary, jp.max_salary AS job_max_salary,
+                    c.name AS company_name, c.logo_path AS company_logo_path
              FROM job_applications a
              JOIN job_postings jp ON jp.id = a.job_posting_id
              JOIN companies c ON c.id = a.company_id
