@@ -142,10 +142,35 @@ class JobPosting extends Model
             $params['keyword_description'] = '%' . $filters['keyword'] . '%';
         }
 
+        // Nothing stored as a real number in the DB is ever fabricated here -
+        // a job with no min/max salary set simply never matches this filter,
+        // rather than being silently treated as 0.
+        if (!empty($filters['min_salary'])) {
+            $where[] = '(jp.max_salary IS NOT NULL AND jp.max_salary >= :min_salary)';
+            $params['min_salary'] = (int) $filters['min_salary'];
+        }
+
+        if (!empty($filters['company'])) {
+            $where[] = 'c.name LIKE :company';
+            $params['company'] = '%' . $filters['company'] . '%';
+        }
+
+        // No dedicated skills column exists on job_postings - matches the same
+        // free-text approach JobMatchScorer already uses against title/description/requirements.
+        if (!empty($filters['skills'])) {
+            $where[] = '(jp.title LIKE :skills_title OR jp.description LIKE :skills_description OR jp.requirements LIKE :skills_requirements)';
+            $params['skills_title'] = '%' . $filters['skills'] . '%';
+            $params['skills_description'] = '%' . $filters['skills'] . '%';
+            $params['skills_requirements'] = '%' . $filters['skills'] . '%';
+        }
+
         $whereSql = implode(' AND ', $where);
 
+        $select = "jp.*, c.name AS company_name, c.logo_path AS company_logo_path,
+                   (SELECT COUNT(*) FROM job_applications ja WHERE ja.job_posting_id = jp.id) AS applicant_count";
+
         if ($page === null) {
-            $sql = "SELECT jp.*, c.name AS company_name, c.logo_path AS company_logo_path
+            $sql = "SELECT {$select}
                     FROM job_postings jp
                     JOIN companies c ON c.id = jp.company_id
                     WHERE {$whereSql}
@@ -165,7 +190,7 @@ class JobPosting extends Model
         $total = (int) $countStmt->fetchColumn();
 
         $stmt = Database::connection()->prepare(
-            "SELECT jp.*, c.name AS company_name, c.logo_path AS company_logo_path
+            "SELECT {$select}
              FROM job_postings jp
              JOIN companies c ON c.id = jp.company_id
              WHERE {$whereSql}

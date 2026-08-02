@@ -37,6 +37,21 @@ class SavedJob extends Model
         $stmt->execute(['student_id' => $studentId, 'job_posting_id' => $jobPostingId]);
     }
 
+    /**
+     * Flat list of job_posting_ids a student has saved - used on the
+     * listing page to build a lookup set instead of one isSaved() query
+     * per card.
+     */
+    public static function savedIdsForStudent(int $studentId): array
+    {
+        $stmt = Database::connection()->prepare(
+            "SELECT job_posting_id FROM saved_jobs WHERE student_id = :student_id"
+        );
+        $stmt->execute(['student_id' => $studentId]);
+
+        return array_map('intval', array_column($stmt->fetchAll(), 'job_posting_id'));
+    }
+
     public static function forStudent(int $studentId): array
     {
         $stmt = Database::connection()->prepare(

@@ -42,6 +42,10 @@
                                 <?= csrf_field() ?>
                                 <button type="submit" class="btn btn-sm btn-outline-primary"><i class="bi bi-camera-video"></i> Interview</button>
                             </form>
+                            <form method="post" action="<?= url('/dashboard/applicants/' . $row['id'] . '/chat-request') ?>">
+                                <?= csrf_field() ?>
+                                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chat-dots"></i> Chat</button>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>

@@ -14,6 +14,7 @@ class FileUploadService
         'cover' => ['jpg', 'jpeg', 'png', 'webp'],
         'gallery' => ['jpg', 'jpeg', 'png', 'webp'],
         'video' => ['webm', 'mp4'],
+        'chat_attachment' => ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'webp'],
     ];
 
     protected const MIME_MAP = [

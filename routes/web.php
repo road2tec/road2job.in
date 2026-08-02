@@ -3,6 +3,7 @@
 use App\Controllers\AccountController;
 use App\Controllers\AchievementController;
 use App\Controllers\AdminAuditLogController;
+use App\Controllers\AdminChatController;
 use App\Controllers\AdminCompanyController;
 use App\Controllers\AdminDirectoryController;
 use App\Controllers\AdminEventController;
@@ -21,6 +22,7 @@ use App\Controllers\AuthController;
 use App\Controllers\BlogController;
 use App\Controllers\CareerServicesController;
 use App\Controllers\CertificateController;
+use App\Controllers\ChatController;
 use App\Controllers\CollegeAlumniController;
 use App\Controllers\CollegeCampusDriveController;
 use App\Controllers\CollegeController;
@@ -178,6 +180,10 @@ $router->group(['prefix' => '/admin', 'middleware' => ['auth', 'csrf', 'role:adm
     $router->get('/colleges', [AdminDirectoryController::class, 'colleges']);
     $router->get('/applications', [AdminDirectoryController::class, 'applications']);
 
+    $router->get('/chats', [AdminChatController::class, 'index']);
+    $router->get('/chats/{id}', [AdminChatController::class, 'show']);
+    $router->post('/chats/{id}/status', [AdminChatController::class, 'updateStatus']);
+
     $router->get('/jobs', [AdminJobController::class, 'index']);
     $router->post('/jobs/{id}', [AdminJobController::class, 'updateStatus']);
     $router->post('/jobs/{id}/delete', [AdminJobController::class, 'destroy']);
@@ -316,10 +322,24 @@ $router->group(['middleware' => ['auth', 'csrf', 'role:employer']], function (Co
     $router->post('/dashboard/applicants/{id}', [JobApplicationController::class, 'updateStatus']);
     $router->get('/dashboard/applicants/{id}', [JobApplicationController::class, 'showApplicant']);
     $router->post('/dashboard/applicants/{applicationId}/request-interview', [InterviewController::class, 'request']);
+    $router->post('/dashboard/applicants/{applicationId}/chat-request', [ChatController::class, 'sendRequest']);
 
     $router->get('/dashboard/interviews', [InterviewController::class, 'manageIndex']);
     $router->get('/dashboard/interviews/{id}', [InterviewController::class, 'showForEmployer']);
     $router->post('/dashboard/interviews/{id}/score', [InterviewController::class, 'submitScore']);
+});
+
+// Chat inbox/thread/request-response actions are identical regardless of
+// which side of the conversation you're on - only the one-way "send a
+// request" trigger (role:employer group above) is asymmetric.
+$router->group(['middleware' => ['auth', 'csrf', 'role:student,employer']], function (Core\Router $router) {
+    $router->get('/dashboard/chat', [ChatController::class, 'inbox']);
+    $router->get('/dashboard/chat/requests', [ChatController::class, 'requestsIndex']);
+    $router->post('/dashboard/chat/requests/{id}', [ChatController::class, 'respondToRequest']);
+    $router->get('/dashboard/chat/{threadId}', [ChatController::class, 'show']);
+    $router->post('/dashboard/chat/{threadId}/messages', [ChatController::class, 'sendMessage']);
+    $router->get('/dashboard/chat/{threadId}/poll', [ChatController::class, 'poll']);
+    $router->post('/dashboard/chat/{threadId}/read', [ChatController::class, 'markRead']);
 });
 
 $router->group(['middleware' => ['auth', 'csrf', 'role:institute']], function (Core\Router $router) {

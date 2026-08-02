@@ -111,6 +111,7 @@ class PageController extends Controller
             'perPage' => $perPage,
             'filters' => $filters,
             'lockType' => false,
+            'savedJobIds' => $this->savedJobIdsForCurrentStudent(),
             'pageTitle' => 'Jobs',
             'pageIntro' => 'Browse open roles from employers on Road2Job.',
             'meta' => [
@@ -134,6 +135,7 @@ class PageController extends Controller
             'perPage' => $perPage,
             'filters' => $filters,
             'lockType' => true,
+            'savedJobIds' => $this->savedJobIdsForCurrentStudent(),
             'pageTitle' => 'Internships',
             'pageIntro' => 'Verified internships posted by employers on Road2Job.',
             'meta' => [
@@ -141,6 +143,22 @@ class PageController extends Controller
                 'description' => 'Browse internships posted by employers on Road2Job.',
             ],
         ], 'marketing');
+    }
+
+    /**
+     * Empty array for guests/non-students - the save button itself is only
+     * ever rendered for logged-in students (see jobs_public.php), this just
+     * avoids one query per card for whoever IS a logged-in student.
+     */
+    protected function savedJobIdsForCurrentStudent(): array
+    {
+        $sessionUser = Session::get('_user');
+
+        if ($sessionUser === null || $sessionUser['role_slug'] !== 'student') {
+            return [];
+        }
+
+        return SavedJob::savedIdsForStudent((int) $sessionUser['id']);
     }
 
     protected function jobFilters(Request $request): array
@@ -151,6 +169,9 @@ class PageController extends Controller
             'experience_level' => (string) $request->input('experience_level', ''),
             'is_remote' => (string) $request->input('is_remote', ''),
             'keyword' => (string) $request->input('keyword', ''),
+            'min_salary' => (string) $request->input('min_salary', ''),
+            'company' => (string) $request->input('company', ''),
+            'skills' => (string) $request->input('skills', ''),
         ];
     }
 
